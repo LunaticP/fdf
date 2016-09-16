@@ -14,8 +14,15 @@ typedef struct	s_e
 	int		y;
 	float	rot;
 	void	*grid;
+	int		xx;
+	int		yy;
+	int		ymax;
+	double	h;
+	int		lastx;
+	int		lasty;
+	int		do_move;
 }				t_e;
 
-void	draw_line(t_e *X, double x, double y, int x2, int y2);
+void	draw_line(t_e *X, double x, double y, int x2, int y2, int color);
 
 #endif
