@@ -6,11 +6,34 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/16 07:01:53 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/17 03:58:48 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/17 05:28:58 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+
+int		lenght(char *line)
+{
+	int	i;
+	int c;
+
+	i = 0;
+	c = 0;
+	ft_putstr(line);
+	ft_putchar(' ');
+	while (line[i])
+	{
+		c++;
+		while (line[i] == ' ')
+			i++;
+		while (line[i] != ' ')
+			i++;
+		i++;
+	}
+	ft_putnbr(c);
+	ft_putchar('\n');
+	return (c);
+}
 
 int		conv(char *line, int	**grid)
 {
@@ -22,18 +45,17 @@ int		conv(char *line, int	**grid)
 	i = 0;
 	j = 0;
 	c = 0;
-	ft_putstr("test\n");
 	while (line[i])
 	{
 		while (line[i] == ' ')
 			i++;
 		j = i;
-		while (line[i] != ' ')
+		while (line[j] != ' ')
 			j++;
 		num = ft_strncpy(num, &line[i], j - i);
-		ft_putstr(num);
 		*grid[c] = ft_atoi(num);
-		free(num);
+		ft_putnbr(*grid[c]);
+		ft_putchar('-');
 		c++;
 		i++;
 	}
@@ -62,17 +84,20 @@ int		**parse(char *file, t_e *data)
 		free(line);
 		c++;
 	}
+	ft_putnbr(c);
+	ft_putchar('\n');
 	grid = (int **)ft_memalloc(sizeof(int *) * c);
-	c = -1;
+	c = 0;
 	close(fd);
 	fd = open(file, O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
 	{
-		 size = conv(line, &grid[c]);
-		 if (size > data->imax)
-			 data->imax = size;
-		 free(line);
-		 c++;
+		grid[c] = (int *)ft_memalloc(sizeof(int) * lenght(line));
+		size = conv(line, &grid[c]);
+		if (size > data->imax)
+			data->imax = size;
+		free(line);
+		c++;
 	}
 	data->jmax = c;
 	return (grid);
