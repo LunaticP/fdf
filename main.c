@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/15 06:22:00 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/16 12:12:27 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/17 03:50:32 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,7 @@ int		mouse(int x, int y, t_e *data)
 
 int		keyboard(int key, t_e *data)
 {
-	ft_putnbr(key);
-	ft_putchar(' ');
+	printf("key : \e[36m%d\e[0m\nx : \e[35m%d\e[0m - y  : \e[35m%d\e[0m - rot : \e[32m%f\e[0m\nxx : \e[31m%d\e[0m - yy  : \e[31m%d\e[0m - h : \e[31m%f\e[0m\n\n", key, data->x, data->y, data->rot, data->xx, data->yy, data->h);
 	if (key == 123) // left
 		data->x -= 5;
 	if (key == 124) // right
@@ -55,15 +54,9 @@ int		keyboard(int key, t_e *data)
 	if (key == 125) // down
 		data->y += 5;
 	if (key == 67) // *
-	{
 		data->xx++;
-		data->ymax++;
-	}
 	if (key == 75) // /
-	{
 		data->xx--;
-		data->ymax--;
-	}
 	if (key == 69) // +
 		data->h += 0.1;
 	if (key == 78) // -
@@ -85,10 +78,19 @@ int		keyboard(int key, t_e *data)
 		data->do_move = 1;
 	else if (key == 53)
 		data->do_move = 0;
+	if (key == 87)
+	{
+		data->x = 30;
+		data->y = 50;
+		data->xx = 52;
+		data->yy = 20;
+		data->h = 13;
+		data->rot = 5.040033;
+	}
 	return (0);
 }
 
-void	draw_grid(int grid[10][10], t_e *data)
+void	draw_grid(int g[10][10], t_e *d)
 {
 	int i;
 	int j;
@@ -97,28 +99,28 @@ void	draw_grid(int grid[10][10], t_e *data)
 	int x2;
 	int y2;
 
-	mlx_hook(data->win, 2, (1L<<0), &keyboard, data);
-	mlx_hook(data->win, 6, (1L<<13), &mouse, data);
+	mlx_hook(d->win, 2, (1L<<0), &keyboard, d);
+	mlx_hook(d->win, 6, (1L<<13), &mouse, d);
 
 	j = -1;
-	while (++j < 10)
+	while (++j < d->jmax)
 	{
 		i = -1;
-		while (++i < 10)
+		while (++i < d->imax)
 		{
-			x = data->ymax + (i * data->xx * cos(data->rot)) - (j * data->xx * sin(data->rot));  // 7 = value of ?
-			y = data->ymax - (i * data->yy * sin(data->rot)) - (j * data->yy * cos(data->rot)) - grid[i][j] * data->h;
-			if (i < 9)
+			x = d->ymax + ((i - 5) * d->xx * cos(d->rot)) - ((j - 5) * d->xx * sin(d->rot));
+			y = d->ymax - ((i - 5) * d->yy * sin(d->rot)) - ((j - 5) * d->yy * cos(d->rot)) - g[i][j] * d->h;
+			if (i < d->imax - 1)
 			{
-				x2 = data->ymax + ((i + 1) * data->xx * cos(data->rot)) - (j * data->xx * sin(data->rot));  // 7 = value of ?
-				y2 = data->ymax - ((i + 1) * data->yy * sin(data->rot)) - (j * data->yy * cos(data->rot)) - grid[i + 1][j] * data->h;
-				draw_line(data, x + data->x, y + data->y, x2 + data->x, y2 + data->y, grid[i + 1][j]);
+				x2 = d->ymax + ((i - 5 + 1) * d->xx * cos(d->rot)) - ((j - 5) * d->xx * sin(d->rot));
+				y2 = d->ymax - ((i - 5 + 1) * d->yy * sin(d->rot)) - ((j - 5) * d->yy * cos(d->rot)) - g[i + 1][j] * d->h;
+				draw_line(d, x + d->x, y + d->y, x2 + d->x, y2 + d->y, g[i + 1][j]);
 			}
-			if (j < 9)
+			if (j < d->jmax - 1)
 			{
-				x2 = data->ymax + (i * data->xx * cos(data->rot)) - ((j + 1) * data->xx * sin(data->rot));  // 7 = value of ?
-				y2 = data->ymax - (i * data->yy * sin(data->rot)) - ((j + 1) * data->yy * cos(data->rot)) - grid[i][j + 1] * data->h;
-				draw_line(data, x + data->x, y + data->y, x2 + data->x, y2 + data->y, grid[i][j + 1]);
+				x2 = d->ymax + ((i - 5) * d->xx * cos(d->rot)) - ((j - 5 + 1) * d->xx * sin(d->rot));
+				y2 = d->ymax - ((i - 5) * d->yy * sin(d->rot)) - ((j - 5 + 1) * d->yy * cos(d->rot)) - g[i][j + 1] * d->h;
+				draw_line(d, x + d->x, y + d->y, x2 + d->x, y2 + d->y, g[i][j + 1]);
 			}
 		}
 	}
@@ -136,24 +138,17 @@ int		lapin(void* v_data)
 int	main(int ac, char **av)
 {
 	t_e	data;
-	int grid[10][10] = {
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 10, 10, 10, 10, 10, 10, 10, 10, 0},
-		{0, 10, 20, 15, 12, 15, 17, 20, 10, 0},
-		{0, 10, 15, 10, 12, 15, 15, 15, 10, 0},
-		{0, 5, 15, 10, 12, 15, 15, 15, 10, 0},
-		{0, 5, 10, 5, 7, 12, 12, 12, 10, 0},
-		{0, 5, 7, 1, 2, 7, 5, 5, 7, 0},
-		{0, 3, 0, 0, 1, 2, 2, 2, 5, 0},
-		{0, 1, 0, 0, 0, 0, 0, 0, 3, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+	int **grid;
+	if (ac != 2)
+		parse(NULL, &data);
+	grid = parse(av[1], &data);
 	data.xx = 15;
 	data.yy = 7;
-	data.ymax = 250;
+	data.ymax = 500;
 	data.h = 1;
 	data.mlx = mlx_init();
 	data.grid = (void *)&grid;
-	data.rot = atoi(av[1]) / (float)57.2958;
+	data.rot = (float)57.2958;
 	data.win = mlx_new_window(data.mlx, 1000, 1000, "fdf");
 	mlx_loop_hook(data.mlx, &lapin, &data);
 	mlx_loop(data.mlx);
