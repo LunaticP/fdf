@@ -11,10 +11,13 @@ typedef struct	s_e
 {
 	void	*mlx;
 	void	*win;
+	void	*image;
 	int		x;
 	int		y;
+	int		color;
+	int		h_max;
 	float	rot;
-	void	*grid;
+	int		**grid;
 	int		xx;
 	int		yy;
 	int		ymax;
@@ -24,9 +27,13 @@ typedef struct	s_e
 	int		lastx;
 	int		lasty;
 	int		do_move;
+	char	*addr;
+	int		bpp;
+	int		l_size;
+	int		endian;
 }				t_e;
 
-void	draw_line(t_e *X, double x, double y, int x2, int y2, int color);
-int		**parse(char *file, t_e *data);
+void	draw_line(t_e *X, double x, double y, int x2, int y2, int color, int color2);
+int		parse(char *file, t_e *data);
 
 #endif

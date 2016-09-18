@@ -6,19 +6,13 @@
 #    By: aviau <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/09/11 11:02:36 by aviau             #+#    #+#              #
-#    Updated: 2016/09/17 03:32:57 by aviau            ###   ########.fr        #
+#    Updated: 2016/09/18 10:53:46 by aviau            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 all:
-	gcc -o mlx libft/libft.a main.c draw_line.c get_next_line.c parse.c -lmlx -framework OpenGL -framework AppKit
+	gcc -g -o fdf libft/libft.a main.c draw_line.c get_next_line.c parse.c -lmlx -framework OpenGL -framework AppKit
 
-# Compilation of all .c with modulable rule
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p $(OBJ_PATH)
-	@$(CC) $(CFLAGS) -o $@ -c $< -lmlx $(FRAMEWORK)
-
-# Force dependance to be rebuild at all call of the rule(s)
 re: fclean all
 
 clean:

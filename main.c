@@ -6,18 +6,55 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/15 06:22:00 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/17 03:50:32 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/19 01:06:14 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #include <stdio.h>
 
+void	draw_grid(int **g, t_e *d)
+{
+	int i;
+	int j;
+	double x;
+	double y;
+	int x2;
+	int y2;
+
+	i = -1;
+	mlx_destroy_image(d->mlx, d->image);
+	d->image = mlx_new_image(d->mlx, 2000, 1250);
+	d->addr = mlx_get_data_addr(d->image, &d->bpp, &d->l_size, &d->endian);
+	while (++i < d->jmax)
+	{
+		j = -1;
+		while (++j < d->imax)
+		{
+			x = d->ymax + ((i - ((double)(d->jmax - 1) / 2)) * d->xx * cos(d->rot))  - ((j - ((double)(d->imax - 1) / 2)) * d->xx * sin(d->rot));
+			y = d->ymax - ((i - ((double)(d->jmax - 1) / 2)) * d->yy * sin(d->rot)) - ((j - ((double)(d->imax - 1) / 2)) * d->yy * cos(d->rot)) - g[i][j] * d->h;
+			if (i < d->jmax - 1)
+			{
+				x2 = d->ymax + ((i - ((double)(d->jmax - 1) / 2) + 1) * d->xx * cos(d->rot)) - ((j - ((double)(d->imax - 1) / 2)) * d->xx * sin(d->rot));
+				y2 = d->ymax - ((i - ((double)(d->jmax - 1) / 2) + 1) * d->yy * sin(d->rot)) - ((j - ((double)(d->imax - 1) / 2)) * d->yy * cos(d->rot)) - g[i + 1][j] * d->h;
+				draw_line(d, x + d->x, y + d->y, x2 + d->x, y2 + d->y, g[i][j], g[i + 1][j]);
+			}
+			if (j < d->imax - 1)
+			{
+				x2 = d->ymax + ((i - ((double)(d->jmax - 1) / 2)) * d->xx * cos(d->rot)) - ((j - ((double)(d->imax - 1) / 2) + 1) * d->xx * sin(d->rot));
+				y2 = d->ymax - ((i - ((double)(d->jmax - 1) / 2)) * d->yy * sin(d->rot)) - ((j - ((double)(d->imax - 1) / 2) + 1) * d->yy * cos(d->rot)) - g[i][j + 1] * d->h;
+				draw_line(d, x + d->x, y + d->y, x2 + d->x, y2 + d->y, g[i][j], g[i][j + 1]);
+			}
+		}
+	}
+//	printf ("x = %f   y = %f   rot = %f\nxx = %d   yy = %d   h = %f\n", x, y, d->rot, d->xx, d->yy, d->h);
+	mlx_put_image_to_window(d->mlx, d->win, d->image, 0, 0);
+}
+
 int		mouse(int x, int y, t_e *data)
 {
 	if (data->do_move)
 	{
-		printf("x : %d - y : %d\n", x, y);
 		if (x < data->lastx)
 		{
 			data->rot -= 0.0174533 * (data->lastx - x);
@@ -30,21 +67,23 @@ int		mouse(int x, int y, t_e *data)
 		}
 		if (y < data->lasty)
 		{
-			data->lasty = y;
-			data->yy--;
+			data->yy -= 0.0174533 * (data->lasty - y);
+			data->lasty = data->yy;
 		}
 		if (y > data->lasty)
 		{
-			data->lasty = y;
-			data->yy++;
+			data->yy += 0.0174533 * (y - data->lasty);
+			data->lasty = data->yy;
 		}
 	}
+	mlx_clear_window(data->mlx, data->win);
+	draw_grid(data->grid, data);
 	return (0);	
 }
 
 int		keyboard(int key, t_e *data)
 {
-	printf("key : \e[36m%d\e[0m\nx : \e[35m%d\e[0m - y  : \e[35m%d\e[0m - rot : \e[32m%f\e[0m\nxx : \e[31m%d\e[0m - yy  : \e[31m%d\e[0m - h : \e[31m%f\e[0m\n\n", key, data->x, data->y, data->rot, data->xx, data->yy, data->h);
+//	printf("key : \e[36m%d\e[0m\n", key);
 	if (key == 123) // left
 		data->x -= 5;
 	if (key == 124) // right
@@ -58,11 +97,12 @@ int		keyboard(int key, t_e *data)
 	if (key == 75) // /
 		data->xx--;
 	if (key == 69) // +
-		data->h += 0.1;
+		data->h += 1;
 	if (key == 78) // -
-		data->h -= 0.1;
+		data->h -= 1;
 	else if (key == 12)
 	{
+//		mlx_destroy_image (data->mlx, data->image);
 		mlx_destroy_window(data->mlx, data->win);
 		exit(0);
 	}
@@ -87,69 +127,41 @@ int		keyboard(int key, t_e *data)
 		data->h = 13;
 		data->rot = 5.040033;
 	}
+	mlx_clear_window(data->mlx, data->win);
+	mlx_string_put(data->mlx, data->win, 50, 50, 0xFFFF00,"Coucou");
+	draw_grid(data->grid, data);
 	return (0);
 }
 
-void	draw_grid(int g[10][10], t_e *d)
+
+int		lapin(t_e *data)
 {
-	int i;
-	int j;
-	double x;
-	double y;
-	int x2;
-	int y2;
-
-	mlx_hook(d->win, 2, (1L<<0), &keyboard, d);
-	mlx_hook(d->win, 6, (1L<<13), &mouse, d);
-
-	j = -1;
-	while (++j < d->jmax)
-	{
-		i = -1;
-		while (++i < d->imax)
-		{
-			x = d->ymax + ((i - 5) * d->xx * cos(d->rot)) - ((j - 5) * d->xx * sin(d->rot));
-			y = d->ymax - ((i - 5) * d->yy * sin(d->rot)) - ((j - 5) * d->yy * cos(d->rot)) - g[i][j] * d->h;
-			if (i < d->imax - 1)
-			{
-				x2 = d->ymax + ((i - 5 + 1) * d->xx * cos(d->rot)) - ((j - 5) * d->xx * sin(d->rot));
-				y2 = d->ymax - ((i - 5 + 1) * d->yy * sin(d->rot)) - ((j - 5) * d->yy * cos(d->rot)) - g[i + 1][j] * d->h;
-				draw_line(d, x + d->x, y + d->y, x2 + d->x, y2 + d->y, g[i + 1][j]);
-			}
-			if (j < d->jmax - 1)
-			{
-				x2 = d->ymax + ((i - 5) * d->xx * cos(d->rot)) - ((j - 5 + 1) * d->xx * sin(d->rot));
-				y2 = d->ymax - ((i - 5) * d->yy * sin(d->rot)) - ((j - 5 + 1) * d->yy * cos(d->rot)) - g[i][j + 1] * d->h;
-				draw_line(d, x + d->x, y + d->y, x2 + d->x, y2 + d->y, g[i][j + 1]);
-			}
-		}
-	}
-}
-
-int		lapin(void* v_data)
-{
-	int i = 0;
-	t_e		*data = (t_e *)v_data;
-	mlx_clear_window(data->mlx, data->win);
-	draw_grid((data->grid), data);
+	static int  loop = 0;
+	mlx_hook(data->win, 2, (1L<<0), &keyboard, data);
+	mlx_hook(data->win, 6, (1L<<13), &mouse, data);
 	return(0);
 }
 
 int	main(int ac, char **av)
 {
 	t_e	data;
-	int **grid;
+
 	if (ac != 2)
 		parse(NULL, &data);
-	grid = parse(av[1], &data);
-	data.xx = 15;
-	data.yy = 7;
-	data.ymax = 500;
-	data.h = 1;
+	data.x = 30;
+	data.y = 50;
+	data.xx = 52;
+	data.yy = 20;
+	data.h = 3;
+	data.rot = 5.040033;
+	data.h_max = 0;
+	parse(av[1], &data);
+	data.ymax = 625;
 	data.mlx = mlx_init();
-	data.grid = (void *)&grid;
-	data.rot = (float)57.2958;
-	data.win = mlx_new_window(data.mlx, 1000, 1000, "fdf");
+	data.win = mlx_new_window(data.mlx, 2000, 1250, "fdf");
+	data.image = mlx_new_image(data.mlx, 2000, 1250);
+	data.addr = mlx_get_data_addr(data.image, &data.bpp, &data.l_size, &data.endian);
+	draw_grid(data.grid, &data);
 	mlx_loop_hook(data.mlx, &lapin, &data);
 	mlx_loop(data.mlx);
 }

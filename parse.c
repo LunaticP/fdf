@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/16 07:01:53 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/17 05:28:58 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/19 00:39:30 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,47 +19,39 @@ int		lenght(char *line)
 
 	i = 0;
 	c = 0;
-	ft_putstr(line);
-	ft_putchar(' ');
 	while (line[i])
 	{
 		c++;
-		while (line[i] == ' ')
-			i++;
 		while (line[i] != ' ')
+			i++;
+		while (line[i] == ' ')
 			i++;
 		i++;
 	}
-	ft_putnbr(c);
-	ft_putchar('\n');
 	return (c);
 }
 
-int		conv(char *line, int	**grid)
+int		conv(int **grid, char *line, int size)
 {
-	int		i;
-	int		j;
-	int		c;
-	char	*num;
+	int			i;
+	int			c;
+	static int	max = 0;
 
 	i = 0;
-	j = 0;
 	c = 0;
+	*grid = (int *)ft_memalloc(sizeof(int) * size);
 	while (line[i])
 	{
-		while (line[i] == ' ')
+		while (line[i] && line[i] == ' ')
 			i++;
-		j = i;
-		while (line[j] != ' ')
-			j++;
-		num = ft_strncpy(num, &line[i], j - i);
-		*grid[c] = ft_atoi(num);
-		ft_putnbr(*grid[c]);
-		ft_putchar('-');
+		grid[0][c] = ft_atoi(&line[i]);
+		if (grid[0][c] >= max)
+			max = grid[0][c];
 		c++;
-		i++;
+		while (line[i] && line[i] != ' ')
+			i++;
 	}
-	return (c);
+	return (max);
 }
 
 void	ex_err(void)
@@ -68,37 +60,36 @@ void	ex_err(void)
 	exit(1);
 }
 
-int		**parse(char *file, t_e *data)
+int		parse(char *file, t_e *data)
 {
 	int 	fd;
 	int		c;
 	int 	size;
-	int		**grid;
 	char	*line;
 
 	if (file == NULL)
 		ex_err();
 	fd = open(file, O_RDONLY);
+	c = 0;
 	while (get_next_line(fd, &line) > 0)
 	{
 		free(line);
 		c++;
 	}
-	ft_putnbr(c);
-	ft_putchar('\n');
-	grid = (int **)ft_memalloc(sizeof(int *) * c);
+	data->grid = (int **)ft_memalloc(sizeof(int *) * (c + 1));
+	data->grid[c] = NULL;
+	data->jmax = c;
 	c = 0;
 	close(fd);
 	fd = open(file, O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
 	{
-		grid[c] = (int *)ft_memalloc(sizeof(int) * lenght(line));
-		size = conv(line, &grid[c]);
+		size = lenght(line);
 		if (size > data->imax)
-			data->imax = size;
+			data->imax = size + 1;
+		data->h_max = conv(&data->grid[c], line, size);
 		free(line);
 		c++;
 	}
-	data->jmax = c;
-	return (grid);
+	return (0);
 }
