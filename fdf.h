@@ -16,7 +16,8 @@ typedef struct	s_e
 	int		y;
 	int		color;
 	int		h_max;
-	float	rot;
+	float	rotx;
+	float	roty;
 	int		**grid;
 	int		xx;
 	int		yy;
