@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/16 07:01:53 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/19 00:39:30 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/19 06:27:48 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,11 @@ int		lenght(char *line)
 	while (line[i])
 	{
 		c++;
-		while (line[i] != ' ')
+		while (line[i] != ' ' && line[i] != ',')
 			i++;
+		if (line[i] == ',')
+			while (line[i] != ' ')
+				i++;
 		while (line[i] == ' ')
 			i++;
 		i++;
@@ -42,13 +45,16 @@ int		conv(int **grid, char *line, int size)
 	*grid = (int *)ft_memalloc(sizeof(int) * size);
 	while (line[i])
 	{
+		if (line[i] == ',')
+			while (line[i] != ' ')
+				i++;
 		while (line[i] && line[i] == ' ')
 			i++;
 		grid[0][c] = ft_atoi(&line[i]);
 		if (grid[0][c] >= max)
 			max = grid[0][c];
 		c++;
-		while (line[i] && line[i] != ' ')
+		while (line[i] && line[i] != ' ' && line[i] != ',')
 			i++;
 	}
 	return (max);
@@ -62,9 +68,9 @@ void	ex_err(void)
 
 int		parse(char *file, t_e *data)
 {
-	int 	fd;
+	int		fd;
 	int		c;
-	int 	size;
+	int		size;
 	char	*line;
 
 	if (file == NULL)

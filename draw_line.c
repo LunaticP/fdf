@@ -1,9 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw_line.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/09/19 06:11:13 by aviau             #+#    #+#             */
+/*   Updated: 2016/09/19 06:12:10 by aviau            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 #include <math.h>
-//******************//
-#include <stdlib.h>
-//******************//
-
 
 int		ft_abs(int num)
 {
@@ -14,7 +22,7 @@ int		ft_abs(int num)
 
 int		get_color(int r, int g, int b)
 {
-int color;
+	int color;
 
 	if (r > 255 || g > 255 || b > 255 || r < 0 || g < 0 || b < 0)
 		color = 0xFFFFFF;
@@ -50,9 +58,10 @@ void	draw_line(t_e *X, double x, double y, int x2, int y2, int color, int color2
 	dy = y2 - y;
 	while (i <= dd)
 	{
-		X->color = get_color(127 - color * 6.35 - (i * ((double)ft_abs(color2 - color) / dd)),
-		63 + color * 9.6 + (i * ((double)ft_abs((color2 - color) * 9.6) / dd)), 0);
-		
+		X->color = get_color(127 - color * 6.35 -
+			(i * ((double)ft_abs(color2 - color) / dd)),
+			63 + color * 9.6 + (i * ((double)ft_abs((color2 - color) * 9.6)
+			/ dd)), 0);
 		put_px(X, x, y, X->color);
 		x += dx / dd;
 		y += dy / dd;

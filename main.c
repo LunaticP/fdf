@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/15 06:22:00 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/19 04:52:18 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/19 06:30:52 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,36 +32,33 @@ void	draw_grid(int **g, t_e *d)
 		while (++j < d->imax)
 		{
 			x = d->ymax + ((i - ((double)(d->jmax - 1) / 2))
-			* d->xx * cos(d->rotx))  - ((j - ((double)(d->imax - 1) / 2))
-			* d->xx * sin(d->rotx));
+			* d->xx * cos(d->rot))  - ((j - ((double)(d->imax - 1) / 2))
+			* d->xx * sin(d->rot));
 			y = d->ymax - ((i - ((double)(d->jmax - 1) / 2))
-			* d->yy * sin(d->roty)) - ((j - ((double)(d->imax - 1) / 2))
-			* d->yy * cos(d->roty)) - (g[i][j] - ((double)(d->h_max / 2))) * d->h;
+			* d->yy * sin(d->rot)) - ((j - ((double)(d->imax - 1) / 2))
+			* d->yy * cos(d->rot)) - g[i][j] * d->h;
 			if (i < d->jmax - 1)
 			{
 				x2 = d->ymax + ((i - ((double)(d->jmax - 1) / 2) + 1)
-				* d->xx * cos(d->rotx)) - ((j - ((double)(d->imax - 1) / 2))
-				* d->xx * sin(d->rotx));
+				* d->xx * cos(d->rot)) - ((j - ((double)(d->imax - 1) / 2))
+				* d->xx * sin(d->rot));
 				y2 = d->ymax - ((i - ((double)(d->jmax - 1) / 2) + 1)
-				* d->yy * sin(d->roty)) - ((j - ((double)(d->imax - 1) / 2))
-				* d->yy * cos(d->roty)) - (g[i + 1][j] - ((double)(d->h_max / 2)))
-				* d->h;
+				* d->yy * sin(d->rot)) - ((j - ((double)(d->imax - 1) / 2))
+				* d->yy * cos(d->rot)) - g[i + 1][j] * d->h;
 				draw_line(d, x + d->x, y + d->y, x2 + d->x, y2 + d->y, g[i][j], g[i + 1][j]);
 			}
 			if (j < d->imax - 1)
 			{
 				x2 = d->ymax + ((i - ((double)(d->jmax - 1) / 2))
-				* d->xx * cos(d->rotx)) - ((j - ((double)(d->imax - 1) / 2) + 1)
-				* d->xx * sin(d->rotx));
+				* d->xx * cos(d->rot)) - ((j - ((double)(d->imax - 1) / 2) + 1)
+				* d->xx * sin(d->rot));
 				y2 = d->ymax - ((i - ((double)(d->jmax - 1) / 2))
-				* d->yy * sin(d->roty)) - ((j - ((double)(d->imax - 1) / 2) + 1)
-				* d->yy * cos(d->roty)) - (g[i][j + 1] - (double)(d->h_max / 2))
-				* d->h;
+				* d->yy * sin(d->rot)) - ((j - ((double)(d->imax - 1) / 2) + 1)
+				* d->yy * cos(d->rot)) - g[i][j + 1] * d->h;
 				draw_line(d, x + d->x, y + d->y, x2 + d->x, y2 + d->y, g[i][j], g[i][j + 1]);
 			}
 		}
 	}
-//	printf ("x = %f   y = %f   rot = %f\nxx = %d   yy = %d   h = %f\n", x, y, d->rot, d->xx, d->yy, d->h);
 	mlx_put_image_to_window(d->mlx, d->win, d->image, 0, 0);
 }
 
@@ -71,22 +68,22 @@ int		mouse(int x, int y, t_e *data)
 	{
 		if (x < data->lastx)
 		{
-			data->rotx -= 0.0174533 * (data->lastx - x);
+			data->rot -= 0.0174533 * (data->lastx - x);
 			data->lastx = x;
 		}
 		if (x > data->lastx)
 		{
-			data->rotx += 0.0174533 * (x - data->lastx);
+			data->rot += 0.0174533 * (x - data->lastx);
 			data->lastx = x;
 		}
 		if (y < data->lasty)
 		{
-			data->roty -= 0.0174533 * (data->lasty - y);
+			data->yy -= (data->lasty - y) / 2;
 			data->lasty = y;
 		}
 		if (y > data->lasty)
 		{
-			data->roty += 0.0174533 * (y - data->lasty);
+			data->yy += (y - data->lasty) / 2;
 			data->lasty = y;
 		}
 	}
@@ -121,13 +118,13 @@ int		keyboard(int key, t_e *data)
 		exit(0);
 	}
 	if (key == 86)
-		data->rotx -= 0.0174533 * 3;
+		data->rot -= 0.0174533 * 3;
 	if (key == 88)
-		data->rotx += 0.0174533 * 3;
+		data->rot += 0.0174533 * 3;
 	if (key == 84)
-		data->roty -= 0.0174533 * 3;
+		data->yy++;
 	if (key == 91)
-		data->roty += 0.0174533 * 3;
+		data->yy--;
 	if (key == 49)
 		data->do_move = 1;
 	else if (key == 53)
@@ -139,8 +136,7 @@ int		keyboard(int key, t_e *data)
 		data->xx = 52;
 		data->yy = 20;
 		data->h = 13;
-		data->rotx = 5.040033;
-		data->roty = 5.040033;
+		data->rot = 5.040033;
 	}
 	mlx_clear_window(data->mlx, data->win);
 	mlx_string_put(data->mlx, data->win, 50, 50, 0xFFFF00,"Coucou");
@@ -154,6 +150,8 @@ int		lapin(t_e *data)
 	static int  loop = 0;
 	mlx_hook(data->win, 2, (1L<<0), &keyboard, data);
 	mlx_hook(data->win, 6, (1L<<13), &mouse, data);
+	if (ft_abs(data->yy) > data->xx)
+		data->yy = (data->yy > 0) ? data->xx : -data->xx;
 	return(0);
 }
 
@@ -168,8 +166,7 @@ int	main(int ac, char **av)
 	data.xx = 52;
 	data.yy = 20;
 	data.h = 3;
-	data.rotx = 5.040033;
-	data.roty = 0.523599;
+	data.rot = 5.040033;
 	data.h_max = 0;
 	parse(av[1], &data);
 	data.ymax = 625;

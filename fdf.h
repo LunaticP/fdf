@@ -1,7 +1,7 @@
 #ifndef FDF_H
 # define FDF_H
 
-# include "sources/mlx.h"
+# include "libmlx/mlx.h"
 # include "libft/libft.h"
 # include "get_next_line.h"
 # include <math.h>
@@ -16,11 +16,10 @@ typedef struct	s_e
 	int		y;
 	int		color;
 	int		h_max;
-	float	rotx;
-	float	roty;
+	float	rot;
 	int		**grid;
 	int		xx;
-	int		yy;
+	double		yy;
 	int		ymax;
 	int		imax;
 	int		jmax;
@@ -36,5 +35,6 @@ typedef struct	s_e
 
 void	draw_line(t_e *X, double x, double y, int x2, int y2, int color, int color2);
 int		parse(char *file, t_e *data);
+int		ft_abs(int num);
 
 #endif
