@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/16 07:01:53 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/19 06:27:48 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/20 09:57:51 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int		parse(char *file, t_e *data)
 		size = lenght(line);
 		if (size > data->imax)
 			data->imax = size + 1;
-		data->h_max = conv(&data->grid[c], line, size);
+		data->hmax = conv(&data->grid[c], line, size);
 		free(line);
 		c++;
 	}

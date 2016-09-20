@@ -12,29 +12,46 @@ typedef struct	s_e
 	void	*mlx;
 	void	*win;
 	void	*image;
-	int		x;
-	int		y;
-	int		color;
-	int		h_max;
-	float	rot;
-	int		**grid;
-	int		xx;
-	double		yy;
-	int		ymax;
-	int		imax;
-	int		jmax;
-	double	h;
-	int		lastx;
-	int		lasty;
-	int		do_move;
 	char	*addr;
 	int		bpp;
 	int		l_size;
 	int		endian;
+	int		x;
+	int		y;
+	int		z;
+	double	xx;
+	double	yy;
+	double	zz;
+	double	imax;
+	double	jmax;
+	int		ymax;
+	int		color;
+	int		hmax;
+	double	rotx;
+	double	roty;
+	double	rotz;
+	int		**grid;
+	int		lastx;
+	int		lasty;
+	int		do_move;
 }				t_e;
 
-void	draw_line(t_e *X, double x, double y, int x2, int y2, int color, int color2);
+typedef struct	s_draw
+{
+	int		x;
+	int		y;
+	int		z;
+	int		x2;
+	int		y2;
+	int		color;
+	int		color2;
+}				t_draw;
+
+void	draw_line(t_e *data, t_draw *X);
+void	draw_grid(t_e *d);
 int		parse(char *file, t_e *data);
 int		ft_abs(int num);
+int		mouse(int x, int y, t_e *data);
+int		keyboard(int key, t_e *data);
 
 #endif

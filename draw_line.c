@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/19 06:11:13 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/19 06:12:10 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/20 08:48:30 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,40 +31,37 @@ int		get_color(int r, int g, int b)
 	return (color);
 }
 
-void	put_px(t_e *data, int x, int y, int color)
+void	put_px(t_e *data, int x, int y)
 {
 	int	pos;
 
-	if (x < 0 || x > 2000 || y < 0 || y > 1250)
-		return;
+	if (x < 0 || x > 1000 || y < 0 || y > 1000)
+		return ;
 	pos = (x * data->bpp / 8) + (y * data->l_size);
-	data->addr[pos] = color;
-	data->addr[pos + 1] = color >> 8;
-	data->addr[pos + 2] = color >> 16;
+	data->addr[pos] = data->color;
+	data->addr[pos + 1] = data->color >> 8;
+	data->addr[pos + 2] = data->color >> 16;
 }
 
-void	draw_line(t_e *X, double x, double y, int x2, int y2, int color, int color2)
+void	draw_line(t_e *data, t_draw *X)
 {
-	double	dx;
-	double	dy;
+	data->color = 0xFF0000;
+	double			dx;
+	double			dy;
 	unsigned int	dd;
 	unsigned int	i;
 
-	dx = (x < x2) ? x2 - x : x - x2;
-	dy = (y < y2) ? y2 - y : y - y2;
+	dx = (X->x < X->x2) ? X->x2 - X->x : X->x - X->x2;
+	dy = (X->y < X->y2) ? X->y2 - X->y : X->y - X->y2;
 	dd = (dx > dy) ? dx : dy;
 	i = 0;
-	dx = x2 - x;
-	dy = y2 - y;
+	dx = X->x2 - X->x;
+	dy = X->y2 - X->y;
 	while (i <= dd)
 	{
-		X->color = get_color(127 - color * 6.35 -
-			(i * ((double)ft_abs(color2 - color) / dd)),
-			63 + color * 9.6 + (i * ((double)ft_abs((color2 - color) * 9.6)
-			/ dd)), 0);
-		put_px(X, x, y, X->color);
-		x += dx / dd;
-		y += dy / dd;
+		put_px(data, X->x, X->y);
+		X->x += dx / dd;
+		X->y += dy / dd;
 		i++;
 	}
 }
