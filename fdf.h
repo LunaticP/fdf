@@ -24,9 +24,10 @@ typedef struct	s_e
 	double	zz;
 	double	imax;
 	double	jmax;
-	int		ymax;
+	double	xmax;
+	double	ymax;
+	double	zmax;
 	int		color;
-	int		hmax;
 	double	rotx;
 	double	roty;
 	double	rotz;
@@ -38,11 +39,18 @@ typedef struct	s_e
 
 typedef struct	s_draw
 {
-	int		x;
-	int		y;
-	int		z;
+	double	tx;
+	double	ty;
+	double	tz;
+	double	tx2;
+	double	ty2;
+	double	tz2;
+	double	x;
+	double	y;
+	double	z;
 	int		x2;
 	int		y2;
+	int		z2;
 	int		color;
 	int		color2;
 }				t_draw;

@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/16 07:01:53 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/20 09:57:51 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/25 04:54:18 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,14 @@ void	ex_err(void)
 	exit(1);
 }
 
+int		mem(t_e *data, int c)
+{
+	data->grid = (int **)ft_memalloc(sizeof(int *) * (c + 1));
+	data->grid[c] = NULL;
+	data->jmax = c;
+	return (0);
+}
+
 int		parse(char *file, t_e *data)
 {
 	int		fd;
@@ -82,10 +90,7 @@ int		parse(char *file, t_e *data)
 		free(line);
 		c++;
 	}
-	data->grid = (int **)ft_memalloc(sizeof(int *) * (c + 1));
-	data->grid[c] = NULL;
-	data->jmax = c;
-	c = 0;
+	c = mem(data, c);
 	close(fd);
 	fd = open(file, O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
@@ -93,9 +98,8 @@ int		parse(char *file, t_e *data)
 		size = lenght(line);
 		if (size > data->imax)
 			data->imax = size + 1;
-		data->hmax = conv(&data->grid[c], line, size);
+		data->zmax = conv(&data->grid[c++], line, size);
 		free(line);
-		c++;
 	}
 	return (0);
 }
