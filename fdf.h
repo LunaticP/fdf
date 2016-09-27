@@ -6,48 +6,61 @@
 # include "get_next_line.h"
 # include <math.h>
 
+typedef struct	s_vec
+{
+	float	x;
+	float	y;
+	float	z;
+}				t_vec;
+
+typedef struct	s_matrix
+{
+	t_vec	x;
+	t_vec	y;
+	t_vec	z;
+}				t_matrix;
 
 typedef struct	s_e
 {
-	void	*mlx;
-	void	*win;
-	void	*image;
-	char	*addr;
-	int		bpp;
-	int		l_size;
-	int		endian;
-	int		x;
-	int		y;
-	int		z;
-	double	xx;
-	double	yy;
-	double	zz;
-	double	imax;
-	double	jmax;
-	double	xmax;
-	double	ymax;
-	double	zmax;
-	int		color;
-	double	rotx;
-	double	roty;
-	double	rotz;
-	int		**grid;
-	int		lastx;
-	int		lasty;
-	int		do_move;
+	void		*mlx;
+	void		*win;
+	void		*image;
+	char		*addr;
+	int			bpp;
+	int			l_size;
+	int			endian;
+	int			x;
+	int			y;
+	int			z;
+	float		scl;
+	float		zz;
+	float		imax;
+	float		jmax;
+	float		xmax;
+	float		ymax;
+	float		zmax;
+	int			color;
+	float		rotx;
+	float		roty;
+	float		rotz;
+	int			**grid;
+	int			lastx;
+	int			lasty;
+	int			do_move;
+	t_matrix	mtrx;
 }				t_e;
 
 typedef struct	s_draw
 {
-	double	tx;
-	double	ty;
-	double	tz;
-	double	tx2;
-	double	ty2;
-	double	tz2;
-	double	x;
-	double	y;
-	double	z;
+	float	tx;
+	float	ty;
+	float	tz;
+	float	tx2;
+	float	ty2;
+	float	tz2;
+	float	x;
+	float	y;
+	float	z;
 	int		x2;
 	int		y2;
 	int		z2;

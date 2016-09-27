@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/19 13:36:56 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/25 05:05:55 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/27 01:31:06 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,21 +53,21 @@ int		keyboard(int key, t_e *data)
 	if (key == 125)
 		data->y += 5;
 	if (key == 67)
-		data->xx++;
+		data->scl *= 1.02;
 	if (key == 75)
-		data->xx--;
+		data->scl /= 1.02;
 	if (key == 69)
-		data->zz += 1;
+		data->zz += 0.01;
 	if (key == 78)
-		data->zz -= 1;
+		data->zz -= 0.01;
 	else if (key == 12)
 	{
 		mlx_destroy_image(data->mlx, data->image);
 		mlx_destroy_window(data->mlx, data->win);
 		exit(0);
 	}
-	ft_putnbr(key);
-	ft_putchar('\n');
+//	ft_putnbr(key);
+//	ft_putchar('\n');
 	if (key == 86)
 		data->roty -= 0.0174533 * 1;
 	if (key == 88)
@@ -88,14 +88,13 @@ int		keyboard(int key, t_e *data)
 	{
 		data->x = 500;
 		data->y = 500;
-		data->xx = 50;
-		data->yy = data->xx;
-		data->zz = 13;
-		data->rotx = 5.040033;
-		data->roty = 5.040033;
+		data->scl = 50;
+		data->zz = 0.25;
+		data->rotx = 0.0174533 * 70;
+		data->roty = 0.0174533 * 30;
+		data->rotz = 0.0174533 * -10;
 	}
-	printf("x = %d y = %d\n", data->x, data->y);
-	data->yy = data->xx;
+//	printf("x = %d y = %d\n", data->x, data->y);
 	mlx_string_put(data->mlx, data->win, 50, 50, 0xFFFF00, "Coucou");
 	draw_grid(data);
 	return (0);

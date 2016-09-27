@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/15 06:22:00 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/25 06:33:59 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/27 02:59:46 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,22 @@ int	main(int ac, char **av)
 		parse(NULL, &d);
 	d.x = 500;
 	d.y = 500;
-	d.xx = 5;
-	d.yy = 5;
-	d.zz = 5;
+	d.scl = 50;
+	d.zz = 0.5;
 	d.rotx = 5.040033;
 	d.roty = 5.040033;
-	d.rotz = 5.040033 * 2;
+	d.rotz = 5.040033;
 	d.xmax = 500;
 	d.ymax = 500;
+	d.mtrx.x.x = 1;
+	d.mtrx.x.y = 0;
+	d.mtrx.x.z = 0;
+	d.mtrx.y.x = 0;
+	d.mtrx.y.y = 1;
+	d.mtrx.y.z = 0;
+	d.mtrx.z.x = 0;
+	d.mtrx.z.y = 0;
+	d.mtrx.z.z = 1;
 	parse(av[1], &d);
 	ft_putstr("Parse done!\n");
 	d.mlx = mlx_init();

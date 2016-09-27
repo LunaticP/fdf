@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/19 14:51:29 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/25 06:38:42 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/27 02:45:43 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,43 +16,63 @@
 void	c_x(t_e *d, t_draw *x)
 {
 	x->x = x->tx;
-	x->x2 = x->tx2;
 	x->y = x->ty * cos(d->rotx) - x->tz * sin(d->rotx);
+	x->z = x->ty * sin(d->rotx) + x->tz * cos(d->rotx);
+	x->x2 = x->tx2;
+	x->z2 = x->ty2 * sin(d->rotx) + x->tz2 * cos(d->rotx);
 	x->y2 = x->ty2 * cos(d->rotx) - x->tz2 * sin(d->rotx);
-	x->z = x->y * sin(d->rotx) + x->tz * cos(d->rotx);
-	x->z2 = x->y2 * sin(d->rotx) + x->tz2 * cos(d->rotx);
 }
 
 void	c_y(t_e *d, t_draw *x)
 {
-	x->x = x->x * cos(d->roty) + x->z * sin(d->roty);
-	x->x2 = x->x2 * cos(d->roty) + x->z2 * sin(d->roty);
-	x->y = x->y;
-	x->y2 = x->y2;
-	x->z = x->x * sin(d->roty) * -1 + x->z * cos(d->roty);
-	x->z2 = x->x2 * sin(d->roty) * -1 + x->z2 * cos(d->roty);
+	float xtmp;
+	float ytmp;
+	float ztmp;
+
+	xtmp = x->x;
+	ytmp = x->y;
+	ztmp = x->z;
+	x->x = xtmp * cos(d->roty) + ztmp * sin(d->roty);
+	x->y = ytmp;
+	x->z = xtmp * sin(d->roty) * -1 + ztmp * cos(d->roty);
+	xtmp = x->x2;
+	ytmp = x->y2;
+	ztmp = x->z2;
+	x->x2 = xtmp * cos(d->roty) + ztmp * sin(d->roty);
+	x->z2 = xtmp * sin(d->roty) * -1 + ztmp * cos(d->roty);
+	x->y2 = ytmp;
 }
 
 void	c_z(t_e *d, t_draw *x)
 {
-	x->x = x->x * cos(d->rotz) - x->y * sin(d->rotz);
-	x->x2 = x->x2 * cos(d->rotz) - x->y2 * sin(d->rotz);
-	x->y = x->x * sin(d->rotz) + x->y * cos(d->rotz);
-	x->y2 = x->x2 * sin(d->rotz) + x->y2 * cos(d->rotz);
-	x->z = x->z;
-	x->z2 = x->z2;
+	float xtmp;
+	float ytmp;
+	float ztmp;
+
+	xtmp = x->x;
+	ytmp = x->y;
+	ztmp = x->z;
+	x->x = xtmp * cos(d->rotz) - ytmp * sin(d->rotz);
+	x->y = xtmp * sin(d->rotz) + ytmp * cos(d->rotz);
+	x->z = ztmp;
+	xtmp = x->x2;
+	ytmp = x->y2;
+	ztmp = x->z2;
+	x->x2 = xtmp * cos(d->rotz) - ytmp * sin(d->rotz);
+	x->y2 = xtmp * sin(d->rotz) + ytmp * cos(d->rotz);
+	x->z2 = ztmp;
 }
 
 void	calc(t_e *d, t_draw *x, int j, int i)
 {
-	x->tx = ((double)i - ((double)(d->imax - 1) / 2)) * d->xx;
-	x->ty = ((double)j - ((double)(d->jmax - 1) / 2)) * d->yy;
-	x->tz = (double)d->grid[j][i] * d->zz;
+	x->tx = ((float)i - ((float)(d->imax - 1) / 2)) * d->scl;
+	x->ty = ((float)j - ((float)(d->jmax - 1) / 2)) * d->scl;
+	x->tz = (float)d->grid[j][i] * d->zz * d->scl;
 	if (j < d->jmax - 1)
 	{
-		x->tx2 = ((double)i - ((double)(d->imax - 1) / 2)) * d->xx;
-		x->ty2 = ((double)j - ((double)(d->jmax - 1) / 2) + 1) * d->yy;
-		x->tz2 = (double)d->grid[j + 1][i] * d->zz;
+		x->tx2 = ((float)i - ((float)(d->imax - 1) / 2)) * d->scl;
+		x->ty2 = ((float)j - ((float)(d->jmax - 1) / 2) + 1) * d->scl;
+		x->tz2 = (float)d->grid[j + 1][i] * d->zz * d->scl;
 		c_x(d, x);
 		c_y(d, x);
 		c_z(d, x);
@@ -60,9 +80,9 @@ void	calc(t_e *d, t_draw *x, int j, int i)
 	}
 	if (i < d->imax - 1)
 	{
-		x->tx2 = ((double)i - ((double)(d->imax - 1) / 2) + 1) * d->xx;
-		x->ty2 = ((double)j - ((double)(d->jmax - 1) / 2)) * d->yy;
-		x->tz2 = (double)d->grid[j][i + 1] * d->zz;
+		x->tx2 = ((float)i - ((float)(d->imax - 1) / 2) + 1) * d->scl;
+		x->ty2 = ((float)j - ((float)(d->jmax - 1) / 2)) * d->scl;
+		x->tz2 = (float)d->grid[j][i + 1] * d->zz * d->scl;
 		c_x(d, x);
 		c_y(d, x);
 		c_z(d, x);
@@ -85,11 +105,6 @@ void	draw_grid(t_e *d)
 		i = 0;
 		while (i < d->imax)
 		{
-			ft_putstr("i = ");
-			ft_putnbr(i);
-			ft_putstr(" j = ");
-			ft_putnbr(j);
-			ft_putstr("\n");
 			calc(d, &x, j, i);
 			i++;
 		}
