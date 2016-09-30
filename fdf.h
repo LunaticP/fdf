@@ -31,48 +31,67 @@ typedef struct	s_e
 	int			endian;
 	int			x;
 	int			y;
-	int			z;
 	float		scl;
 	float		zz;
 	float		imax;
 	float		jmax;
-	float		xmax;
-	float		ymax;
 	float		zmax;
-	int			color;
-	float		rotx;
-	float		roty;
-	float		rotz;
-	int			**grid;
+	float		zbufmax;
+	float		shadow;
 	int			lastx;
 	int			lasty;
+	int			color;
+	int			**grid;
 	int			do_move;
-	t_matrix	mtrx;
+	float		fov;
+	char		*name;
+	short		do_shadow;
+	short		do_color;
+	int			r_s;
+	int			r_e;
+	int			g_s;
+	int			g_e;
+	int			b_s;
+	int			b_e;
+	t_matrix	m;
 }				t_e;
 
 typedef struct	s_draw
 {
-	float	tx;
-	float	ty;
-	float	tz;
-	float	tx2;
-	float	ty2;
-	float	tz2;
-	float	x;
-	float	y;
-	float	z;
-	int		x2;
-	int		y2;
-	int		z2;
-	int		color;
-	int		color2;
+	float			c;
+	float			c2;
+	float			tx;
+	float			ty;
+	float			tz;
+	float			tx2;
+	float			ty2;
+	float			tz2;
+	float			x;
+	float			y;
+	float			z;
+	float			x2;
+	float			y2;
+	float			z2;
 }				t_draw;
+
+typedef struct	s_color
+{
+	int		r;
+	int		g;
+	int		b;
+	float	start;
+	float	end;
+	float	step;
+}				t_color;
 
 void	draw_line(t_e *data, t_draw *X);
 void	draw_grid(t_e *d);
 int		parse(char *file, t_e *data);
-int		ft_abs(int num);
+float	ft_abs(float num);
 int		mouse(int x, int y, t_e *data);
 int		keyboard(int key, t_e *data);
+void	c_x(float rot, t_vec *vec);
+void	c_y(float rot, t_vec *vec);
+void	c_z(float rot, t_vec *vec);
 
 #endif

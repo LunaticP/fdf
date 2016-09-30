@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/16 07:01:53 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/25 04:54:18 by aviau            ###   ########.fr       */
+/*   Updated: 2016/09/30 03:58:03 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,15 @@ int		lenght(char *line)
 
 	i = 0;
 	c = 0;
+	while (line[i] == ' ' && line[i])
+		i++;
 	while (line[i])
 	{
+		while (line[i] != ' ' && line[i])
+			i++;
 		c++;
-		while (line[i] != ' ' && line[i] != ',')
+		while (line[i] == ' ' && line[i])
 			i++;
-		if (line[i] == ',')
-			while (line[i] != ' ')
-				i++;
-		while (line[i] == ' ')
-			i++;
-		i++;
 	}
 	return (c);
 }
@@ -66,11 +64,12 @@ void	ex_err(void)
 	exit(1);
 }
 
-int		mem(t_e *data, int c)
+int		mem(t_e *data, int c, int fd)
 {
 	data->grid = (int **)ft_memalloc(sizeof(int *) * (c + 1));
 	data->grid[c] = NULL;
 	data->jmax = c;
+	close(fd);
 	return (0);
 }
 
@@ -90,14 +89,13 @@ int		parse(char *file, t_e *data)
 		free(line);
 		c++;
 	}
-	c = mem(data, c);
-	close(fd);
+	c = mem(data, c, fd);
 	fd = open(file, O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
 	{
 		size = lenght(line);
 		if (size > data->imax)
-			data->imax = size + 1;
+			data->imax = size;
 		data->zmax = conv(&data->grid[c++], line, size);
 		free(line);
 	}
