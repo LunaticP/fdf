@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/01 08:22:12 by aviau             #+#    #+#             */
-/*   Updated: 2016/10/01 08:22:16 by aviau            ###   ########.fr       */
+/*   Updated: 2016/10/01 13:11:03 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ void				key_rotx(int keys, t_e *data);
 void				key_roty(int keys, t_e *data);
 void				key_rotz(int keys, t_e *data);
 void				disp_data(t_e *d);
+void				c_pattern(int key, t_e *d);
 char				*free_join(char *dst, char *src);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/01 08:15:47 by aviau             #+#    #+#             */
-/*   Updated: 2016/10/01 11:56:43 by aviau            ###   ########.fr       */
+/*   Updated: 2016/10/01 12:08:27 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void		disp_data(t_e *d)
 	char	*data;
 	char	*name;
 
-	name = ft_strjoin("map: ", (ft_strrchr(d->name, '/') + 1));
+	name = ft_strjoin("map: ", d->name);
 	mlx_string_put(d->mlx, d->win, 10, 10, 0x7777FF, name);
 	free(name);
 	disp_xy_zz(d);

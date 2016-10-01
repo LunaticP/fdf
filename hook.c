@@ -6,64 +6,27 @@
 /*   By: aviau <aviau@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/30 04:29:58 by aviau             #+#    #+#             */
-/*   Updated: 2016/10/01 11:29:46 by aviau            ###   ########.fr       */
+/*   Updated: 2016/10/01 13:08:33 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	y_rot_mouse(int x, t_e *data)
+void	rev_col(t_e *d)
 {
-	float	a;
+	int r;
+	int g;
+	int b;
 
-	if (x < data->lastx)
-	{
-		a = 0.015 * (data->lastx - x);
-		c_y(a, &data->m.x);
-		c_y(a, &data->m.y);
-		c_y(a, &data->m.z);
-		data->lastx = x;
-	}
-	if (x > data->lastx)
-	{
-		a = -0.015 * (x - data->lastx);
-		c_y(a, &data->m.x);
-		c_y(a, &data->m.y);
-		c_y(a, &data->m.z);
-		data->lastx = x;
-	}
-}
-
-void	x_rot_mouse(int y, t_e *data)
-{
-	float	a;
-
-	if (y < data->lasty)
-	{
-		a = -0.015 * (data->lasty - y);
-		c_x(a, &data->m.x);
-		c_x(a, &data->m.y);
-		c_x(a, &data->m.z);
-		data->lasty = y;
-	}
-	if (y > data->lasty)
-	{
-		a = 0.015 * (y - data->lasty);
-		c_x(a, &data->m.x);
-		c_x(a, &data->m.y);
-		c_x(a, &data->m.z);
-		data->lasty = y;
-	}
-}
-
-int		mouse(int x, int y, t_e *data)
-{
-	if (data->do_move)
-	{
-		y_rot_mouse(x, data);
-		x_rot_mouse(y, data);
-	}
-	return (0);
+	r = d->r_s;
+	g = d->g_s;
+	b = d->b_s;
+	d->r_s = d->r_e;
+	d->g_s = d->g_e;
+	d->b_s = d->b_e;
+	d->r_e = r;
+	d->g_e = g;
+	d->b_e = b;
 }
 
 int		keypress(int key, t_e *d)
@@ -82,6 +45,7 @@ int		keypress(int key, t_e *d)
 		mlx_destroy_window(d->mlx, d->win);
 		exit(0);
 	}
+	c_pattern(key, d);
 	p_scale_fov_more(key, d);
 	p_rot_trans(key, d);
 	p_col_modif(key, d);
@@ -107,6 +71,8 @@ int		keyrel(int key, t_e *d)
 		d->m.z.y = 0.575350;
 		d->m.z.z = 0.735516;
 	}
+	if (NUM_0)
+		rev_col(d);
 	r_scale_fov_more(key, d);
 	r_rot_trans(key, d);
 	r_col_modif(key, d);
