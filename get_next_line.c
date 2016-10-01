@@ -6,13 +6,13 @@
 /*   By: aviau <aviau@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/26 04:22:38 by aviau             #+#    #+#             */
-/*   Updated: 2016/08/01 21:28:45 by aviau            ###   ########.fr       */
+/*   Updated: 2016/10/01 08:15:39 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*free_join(char *dst, char *src)
+char		*free_join(char *dst, char *src)
 {
 	char	*tmp;
 
@@ -22,13 +22,13 @@ char	*free_join(char *dst, char *src)
 	return (dst);
 }
 
-int		freeturn(char *buf, int r)
+static int	freeturn(char *buf, int r)
 {
 	free(buf);
 	return (r);
 }
 
-int		save_buf(int index, char **line)
+static int	save_buf(int index, char **line)
 {
 	static char	*save;
 	char		*tmp;
@@ -56,7 +56,7 @@ int		save_buf(int index, char **line)
 	}
 }
 
-int		get_next_line(int const fd, char **line)
+int			get_next_line(int const fd, char **line)
 {
 	int		r;
 	int		i;

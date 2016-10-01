@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/19 06:11:13 by aviau             #+#    #+#             */
-/*   Updated: 2016/09/30 03:56:35 by aviau            ###   ########.fr       */
+/*   Updated: 2016/10/01 07:11:51 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,15 @@ t_color	col(t_draw *x, int i, t_e *d, int dd)
 	return (c);
 }
 
+void	init_d(float *dx, float *dy, unsigned int *dd, t_draw *x)
+{
+	*dx = (x->x < x->x2) ? x->x2 - x->x : x->x - x->x2;
+	*dy = (x->y < x->y2) ? x->y2 - x->y : x->y - x->y2;
+	*dd = (*dx > *dy) ? *dx : *dy;
+	*dx = *dd != 0 ? (x->x2 - x->x) / *dd : 1;
+	*dy = *dd != 0 ? (x->y2 - x->y) / *dd : 1;
+}
+
 void	draw_line(t_e *data, t_draw *x)
 {
 	float			dx;
@@ -70,12 +79,14 @@ void	draw_line(t_e *data, t_draw *x)
 	unsigned int	i;
 	t_color			c;
 
-	dx = (x->x < x->x2) ? x->x2 - x->x : x->x - x->x2;
-	dy = (x->y < x->y2) ? x->y2 - x->y : x->y - x->y2;
-	dd = (dx > dy) ? dx : dy;
 	i = 0;
-	dx = dd != 0 ? (x->x2 - x->x) / dd : 1;
-	dy = dd != 0 ? (x->y2 - x->y) / dd : 1;
+	init_d(&dx, &dy, &dd, x);
+	if ((x->x + (dx * i) + data->x < 0 || x->y + (dy * i) + data->y < 0)
+	&& (x->x2 + (dx * i) + data->x < 0 || x->y2 + (dy * i) + data->y < 0))
+		return ;
+	if ((x->x + (dx * i) + data->x > 2400 || x->y + (dy * i) + data->y > 1350)
+	&& (x->x2 + (dx * i) + data->x > 2400 || x->y2 + (dy * i) + data->y > 1350))
+		return ;
 	c.r = 255;
 	c.g = 255;
 	c.b = 255;
