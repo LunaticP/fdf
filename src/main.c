@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/15 06:22:00 by aviau             #+#    #+#             */
-/*   Updated: 2017/08/11 11:44:02 by aviau            ###   ########.fr       */
+/*   Updated: 2017/08/14 15:06:54 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,55 @@
 #include <stdio.h>
 #include <sys/time.h>
 
-int		fdf_loop(t_e *d)
+int 	compare(int **a, int **b)
+{
+	for (int i = 0; i < 128; i++) {
+		for (int j = 0; j < 128; j++){
+			if (a[i][j] != b[i][j])
+				return (0);
+		}
+	}
+	return (1);
+}
+
+void	transition(t_e *d)
 {
 	struct timeval	time;
-	double			t;
+	int	i;
+	int j;
+	int	x;
 
 	gettimeofday(&time, NULL);
-	t = time.tv_sec * 1000000 + time.tv_usec;
-	d->z = d->zz;
+	srandom(time.tv_sec + time.tv_usec);
+	if (time.tv_sec % 5)
+		perlin(d->noise);
+	x = random() % 5000;
+	for (int num = 0; num < x; num++) {
+		i = random() % 128;
+		j = random() % 128;
+		if (d->noise[i][j] > d->save[i][j] && d->noise[i][j] > d->grid[i][j])
+			d->grid[i][j] += 1;
+		else if (d->noise[i][j] < d->save[i][j] && d->noise[i][j] < d->grid[i][j])
+			d->grid[i][j] -= 1;
+		else
+			d->grid[i][j] = d->noise[i][j];
+	}
+}
+
+int		fdf_loop(t_e *d)
+{
+//	struct timeval	time;
+//	double			t;
+//
+//	gettimeofday(&time, NULL);
+//	t = time.tv_sec * 1000000 + time.tv_usec;
+	d->z = d->zz;// * cos(t / 200000.0);
 	key_color(d->key, d, (d->key & PSHIFT) ? 1 : 0, (d->key & P_CTRL) ? 1 : 0);
 	key_sclfov_trans(d->key, d);
 	key_rotx(d->key, d);
 	key_roty(d->key, d);
 	key_rotz(d->key, d);
-
+	transition(d);
 	draw_grid(d);
 	disp_data(d);
 	return (0);
@@ -35,12 +70,12 @@ int		fdf_loop(t_e *d)
 
 void	init2(t_e *d)
 {
-	d->r_s = 0;
-	d->r_e = 128;
-	d->g_s = 255;
-	d->g_e = 64;
-	d->b_s = 0;
-	d->b_e = 0;
+	d->r_s = 100;
+	d->r_e = 255;
+	d->g_s = 100;
+	d->g_e = 255;
+	d->b_s = 100;
+	d->b_e = 255;
 }
 
 t_e		init(void)
@@ -49,9 +84,9 @@ t_e		init(void)
 
 	d.x = W / 2;
 	d.y = H / 2;
-	d.scl = 50;
+	d.scl = 2;
 	d.fov = 60;
-	d.zz = -0.5;
+	d.zz = -0.1;
 	d.imax = 0;
 	d.jmax = 0;
 	d.m.x.x = 0.817374;
@@ -81,10 +116,27 @@ int		main(int ac, char **av)
 	d = init();
 	d.name = ft_strdup(av[1]);
 	parse(av[1], &d);
+/*	for (int i = 0; i < 256; i++) {
+		for (int j = 0; j < 256; j++) {
+			ft_putnbr(d.grid[i][j]);
+			ft_putchar(' ');
+		}
+		ft_putchar('\n');
+	}*/
 	d.mlx = mlx_init();
 	d.win = mlx_new_window(d.mlx, W, H, "fdf");
 	d.image = mlx_new_image(d.mlx, W, H);
 	d.addr = mlx_get_data_addr(d.image, &d.bpp, &d.l_size, &d.endian);
+	d.grid = perlin(NULL);
+	d.save = (int **)ft_memalloc(sizeof(int *) * 128);
+	for (int k = 0; k < 128; k++)
+		d.save[k] = (int *)ft_memalloc(sizeof(int) * 128);
+	for (int i = 0; i < 128; i++) {
+		for (int j = 0; j < 128; j++){
+			d.save[i][j] = d.grid[i][j];
+		}
+	}
+	d.noise = perlin(NULL);
 	draw_grid(&d);
 	mlx_hook(d.win, 2, (1L << 0), &keypress, &d);
 	mlx_hook(d.win, 3, (1L << 1), &keyrel, &d);

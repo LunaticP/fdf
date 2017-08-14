@@ -6,7 +6,7 @@
 #    By: aviau <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/09/11 11:02:36 by aviau             #+#    #+#              #
-#    Updated: 2017/08/11 07:35:02 by aviau            ###   ########.fr        #
+#    Updated: 2017/08/14 10:20:08 by aviau            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ SRC_NAME =	c_pattern.c\
 			main.c\
 			mouse.c\
 			parse.c\
+			perlin.c\
 			rotate.c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)

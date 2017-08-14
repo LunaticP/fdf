@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/16 07:01:53 by aviau             #+#    #+#             */
-/*   Updated: 2016/10/02 02:43:17 by aviau            ###   ########.fr       */
+/*   Updated: 2017/08/14 11:08:45 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,10 @@ int		parse(char *file, t_e *data)
 	int		ret;
 	char	*line;
 
+	data->imax = 128;
+	data->jmax = 128;
+	data->zmax = 255;
+	return (0);
 	fd = 0;
 	if ((file == NULL || (fd = open(file, O_RDONLY)) < 0))
 		ex_err(file);

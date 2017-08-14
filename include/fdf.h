@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/01 08:22:12 by aviau             #+#    #+#             */
-/*   Updated: 2017/08/11 10:56:48 by aviau            ###   ########.fr       */
+/*   Updated: 2017/08/14 14:59:49 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ typedef struct		s_e
 	int				lasty;
 	int				color;
 	int				**grid;
+	int				**noise;
+	int				**save;
 	int				do_move;
 	float			fov;
 	char			*name;
@@ -137,5 +139,6 @@ void				key_rotz(int keys, t_e *data);
 void				disp_data(t_e *d);
 void				c_pattern(int key, t_e *d);
 char				*free_join(char *dst, char *src);
+int					**perlin(int **noise);
 
 #endif

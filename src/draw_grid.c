@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/19 14:51:29 by aviau             #+#    #+#             */
-/*   Updated: 2017/08/14 07:04:58 by aviau            ###   ########.fr       */
+/*   Updated: 2017/08/14 12:23:36 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,31 +46,32 @@ void	calc(t_e *d, t_draw *x, int j, int i)
 	x->ty = ((float)j - ((float)(d->jmax - 1) / 2)) * d->scl;
 	x->tz = (float)d->grid[j][i] * d->z * d->scl;
 	x->c = abs(d->grid[j][i]);
-	if (j < d->jmax - 1)
+	if (j < d->jmax - 1 && i < d->imax - 1)
 	{
 		x->tx2 = ((float)i - ((float)(d->imax - 1) / 2)) * d->scl;
 		x->ty2 = ((float)j - ((float)(d->jmax - 1) / 2) + 1) * d->scl;
 		x->tz2 = (float)d->grid[j + 1][i] * d->z * d->scl;
-		x->c2 = abs(d->grid[j + 1][i]);
-	}
-	if (i < d->imax - 1)
-	{
 		x->tx3 = ((float)i - ((float)(d->imax - 1) / 2) + 1) * d->scl;
 		x->ty3 = ((float)j - ((float)(d->jmax - 1) / 2)) * d->scl;
 		x->tz3 = (float)d->grid[j][i + 1] * d->z * d->scl;
-		x->c2 = abs(d->grid[j][i + 1]);
-	}
-	calc2(d, x);
-	if (x->z >= -(d->fov * 20) && x->z2 >= -(d->fov * 20) && x->z3 >= -(d->fov * 20))
-		draw_triangle(d, x);
-	if (i < d->imax - 1 && j < d->jmax - 1)
-	{
+		x->c2 = abs(d->grid[j + 1][i]);
+		calc2(d, x);
+		if (x->z >= -(d->fov * 30) && x->z2 >= -(d->fov * 30) && x->z3 >= -(d->fov * 30) &&
+			!((x->x + d->x <  0 && x->x2 + d->x <  0 && x->x3 + d->x <  0) ||
+			  (x->x + d->x >= W && x->x2 + d->x >= W && x->x3 + d->x >= W) ||
+			  (x->y + d->y <  0 && x->y2 + d->y <  0 && x->y3 + d->y <  0) ||
+			  (x->y + d->y >= H && x->y2 + d->y >= H && x->y3 + d->y >= H)))
+			draw_triangle(d, x);
 		x->tx = ((float)i - ((float)(d->imax - 1) / 2) + 1) * d->scl;
 		x->ty = ((float)j - ((float)(d->jmax - 1) / 2) + 1) * d->scl;
 		x->tz = (float)d->grid[j + 1][i + 1] * d->z * d->scl;
 		x->c2 = abs(d->grid[j + 1][i + 1]);
 		calc2(d, x);
-		if (x->z >= -(d->fov * 20) && x->z2 >= -(d->fov * 20) && x->z3 >= -(d->fov * 20))
+		if (x->z >= -(d->fov * 30) && x->z2 >= -(d->fov * 30) && x->z3 >= -(d->fov * 30) &&
+			!((x->x + d->x <  0 && x->x2 + d->x <  0 && x->x3 + d->x <  0) ||
+			  (x->x + d->x >= W && x->x2 + d->x >= W && x->x3 + d->x >= W) ||
+			  (x->y + d->y <  0 && x->y2 + d->y <  0 && x->y3 + d->y <  0) ||
+			  (x->y + d->y >= H && x->y2 + d->y >= H && x->y3 + d->y >= H)))
 			draw_triangle(d, x);
 	}
 }
