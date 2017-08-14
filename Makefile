@@ -6,7 +6,7 @@
 #    By: aviau <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/09/11 11:02:36 by aviau             #+#    #+#              #
-#    Updated: 2016/10/02 02:17:21 by aviau            ###   ########.fr        #
+#    Updated: 2017/08/11 07:35:02 by aviau            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ SRC_NAME =	c_pattern.c\
 			disp_data.c\
 			draw_grid.c\
 			draw_line.c\
+			draw_triangle.c\
 			get_next_line.c\
 			hook.c\
 			k_press.c\
@@ -34,7 +35,7 @@ OBJ=$(addprefix $(OBJ_PATH),$(OBJ_NAME))
 INC=-I ./include -I./libft -I ./libmlx
 ARG=-L ./libft -lft -lmlx\
 	-framework OpenGl -framework AppKit
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra
 all: $(NAME)
 
 $(NAME): lib $(OBJ)

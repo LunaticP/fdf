@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/19 06:11:13 by aviau             #+#    #+#             */
-/*   Updated: 2016/10/01 07:11:51 by aviau            ###   ########.fr       */
+/*   Updated: 2017/08/14 06:59:42 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	put_px(t_e *data, int x, int y)
 {
 	int	pos;
 
-	if (x <= 0 || x >= 2400 || y <= 0 || y >= 1350)
+	if (x <= 0 || x >= W || y <= 0 || y >= H)
 		return ;
 	pos = (x * data->bpp / 8) + (y * data->l_size);
 	data->addr[pos] = data->color;
@@ -84,8 +84,8 @@ void	draw_line(t_e *data, t_draw *x)
 	if ((x->x + (dx * i) + data->x < 0 || x->y + (dy * i) + data->y < 0)
 	&& (x->x2 + (dx * i) + data->x < 0 || x->y2 + (dy * i) + data->y < 0))
 		return ;
-	if ((x->x + (dx * i) + data->x > 2400 || x->y + (dy * i) + data->y > 1350)
-	&& (x->x2 + (dx * i) + data->x > 2400 || x->y2 + (dy * i) + data->y > 1350))
+	if ((x->x + (dx * i) + data->x > W || x->y + (dy * i) + data->y > H)
+	&& (x->x2 + (dx * i) + data->x > W || x->y2 + (dy * i) + data->y > H))
 		return ;
 	c.r = 255;
 	c.g = 255;

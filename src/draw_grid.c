@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/19 14:51:29 by aviau             #+#    #+#             */
-/*   Updated: 2016/10/01 05:39:55 by aviau            ###   ########.fr       */
+/*   Updated: 2017/08/14 07:04:58 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,39 +23,55 @@ void	calc2(t_e *d, t_draw *x)
 	x->x2 = x->tx2 * (d->m.x.x) + x->ty2 * (d->m.y.x) + x->tz2 * (d->m.z.x);
 	x->y2 = x->tx2 * (d->m.x.y) + x->ty2 * (d->m.y.y) + x->tz2 * (d->m.z.y);
 	x->z2 = x->tx2 * (d->m.x.z) + x->ty2 * (d->m.y.z) + x->tz2 * (d->m.z.z);
+	x->x3 = x->tx3 * (d->m.x.x) + x->ty3 * (d->m.y.x) + x->tz3 * (d->m.z.x);
+	x->y3 = x->tx3 * (d->m.x.y) + x->ty3 * (d->m.y.y) + x->tz3 * (d->m.z.y);
+	x->z3 = x->tx3 * (d->m.x.z) + x->ty3 * (d->m.y.z) + x->tz3 * (d->m.z.z);
 	coef = (x->z + d->fov * 20) / (d->fov * 10);
 	x->x /= coef;
 	x->y /= coef;
+	x->z /= coef;
 	coef = (x->z2 + d->fov * 20) / (d->fov * 10);
 	x->x2 /= coef;
 	x->y2 /= coef;
+	x->z2 /= coef;
+	coef = (x->z3 + d->fov * 20) / (d->fov * 10);
+	x->x3 /= coef;
+	x->y3 /= coef;
+	x->z3 /= coef;
 }
 
 void	calc(t_e *d, t_draw *x, int j, int i)
 {
 	x->tx = ((float)i - ((float)(d->imax - 1) / 2)) * d->scl;
 	x->ty = ((float)j - ((float)(d->jmax - 1) / 2)) * d->scl;
-	x->tz = (float)d->grid[j][i] * d->zz * d->scl;
+	x->tz = (float)d->grid[j][i] * d->z * d->scl;
 	x->c = abs(d->grid[j][i]);
 	if (j < d->jmax - 1)
 	{
 		x->tx2 = ((float)i - ((float)(d->imax - 1) / 2)) * d->scl;
 		x->ty2 = ((float)j - ((float)(d->jmax - 1) / 2) + 1) * d->scl;
-		x->tz2 = (float)d->grid[j + 1][i] * d->zz * d->scl;
+		x->tz2 = (float)d->grid[j + 1][i] * d->z * d->scl;
 		x->c2 = abs(d->grid[j + 1][i]);
-		calc2(d, x);
-		if (x->z >= -(d->fov * 20) && x->z2 >= -(d->fov * 20))
-			draw_line(d, x);
 	}
 	if (i < d->imax - 1)
 	{
-		x->tx2 = ((float)i - ((float)(d->imax - 1) / 2) + 1) * d->scl;
-		x->ty2 = ((float)j - ((float)(d->jmax - 1) / 2)) * d->scl;
-		x->tz2 = (float)d->grid[j][i + 1] * d->zz * d->scl;
+		x->tx3 = ((float)i - ((float)(d->imax - 1) / 2) + 1) * d->scl;
+		x->ty3 = ((float)j - ((float)(d->jmax - 1) / 2)) * d->scl;
+		x->tz3 = (float)d->grid[j][i + 1] * d->z * d->scl;
 		x->c2 = abs(d->grid[j][i + 1]);
+	}
+	calc2(d, x);
+	if (x->z >= -(d->fov * 20) && x->z2 >= -(d->fov * 20) && x->z3 >= -(d->fov * 20))
+		draw_triangle(d, x);
+	if (i < d->imax - 1 && j < d->jmax - 1)
+	{
+		x->tx = ((float)i - ((float)(d->imax - 1) / 2) + 1) * d->scl;
+		x->ty = ((float)j - ((float)(d->jmax - 1) / 2) + 1) * d->scl;
+		x->tz = (float)d->grid[j + 1][i + 1] * d->z * d->scl;
+		x->c2 = abs(d->grid[j + 1][i + 1]);
 		calc2(d, x);
-		if (x->z >= -(d->fov * 20) && x->z2 >= -(d->fov * 20))
-			draw_line(d, x);
+		if (x->z >= -(d->fov * 20) && x->z2 >= -(d->fov * 20) && x->z3 >= -(d->fov * 20))
+			draw_triangle(d, x);
 	}
 }
 
@@ -66,9 +82,11 @@ void	draw_grid(t_e *d)
 	t_draw	x;
 
 	mlx_destroy_image(d->mlx, d->image);
-	d->image = mlx_new_image(d->mlx, 2400, 1350);
+	d->image = mlx_new_image(d->mlx, W, H);
 	d->addr = mlx_get_data_addr(d->image, &d->bpp, &d->l_size, &d->endian);
 	j = 0;
+	for (int b = 0; b < W * H; b++)
+		x.z_buf[b] = 100000.0f;
 	while (j < d->jmax)
 	{
 		i = 0;

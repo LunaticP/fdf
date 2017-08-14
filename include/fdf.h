@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/01 08:22:12 by aviau             #+#    #+#             */
-/*   Updated: 2016/10/02 02:20:14 by aviau            ###   ########.fr       */
+/*   Updated: 2017/08/11 10:56:48 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 # include "libft.h"
 # include "get_next_line.h"
 # include <math.h>
+
+# define W 1280
+# define H 720
 
 typedef struct		s_vec
 {
@@ -45,6 +48,7 @@ typedef struct		s_e
 	int				x;
 	int				y;
 	float			scl;
+	float			z;
 	float			zz;
 	float			imax;
 	float			jmax;
@@ -66,10 +70,12 @@ typedef struct		s_e
 	int				b_e;
 	unsigned int	key;
 	t_matrix		m;
+	t_vec			l;
 }					t_e;
 
 typedef struct		s_draw
 {
+	float			z_buf[W * H];
 	float			c;
 	float			c2;
 	float			tx;
@@ -78,12 +84,18 @@ typedef struct		s_draw
 	float			tx2;
 	float			ty2;
 	float			tz2;
+	float			tx3;
+	float			ty3;
+	float			tz3;
 	float			x;
 	float			y;
 	float			z;
 	float			x2;
 	float			y2;
 	float			z2;
+	float			x3;
+	float			y3;
+	float			z3;
 }					t_draw;
 
 typedef struct		s_color
@@ -96,7 +108,11 @@ typedef struct		s_color
 	float			step;
 }					t_color;
 
+t_color				col(t_draw *x, int i, t_e *d, int dd);
+int					get_color(int r, int g, int b);
+void				put_px(t_e *d, int x, int y);
 void				draw_line(t_e *data, t_draw *x);
+void				draw_triangle(t_e *data, t_draw *x);
 void				draw_grid(t_e *d);
 int					parse(char *file, t_e *data);
 float				ft_abs(float num);
